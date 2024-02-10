@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Chat App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Real-Time Chat App</h1>
+      <div id="chat">
+        <ul id="messages"></ul>
+        <div id="messageForm">
+          <input id="messageInput" autocomplete="off" />
+          <button onclick="sendMessage()">Send Message</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+
+      //recieve message from the server
+      socket.on("message", (data) => {
+        displayMessage(data);
+      });
+
+      // function to display message
+      function displayMessage(message) {
+        let chatList = document.getElementById("messages");
+        let chatmsg = document.createElement("li");
+        chatmsg.classList.add("listClass");
+        chatList.appendChild(chatmsg);
+        chatmsg.textContent = message;
+      }
+      // function to send Message
+      function sendMessage() {
+        console.log("send");
+        let msgContent = document.getElementById("messageInput");
+        let message = msgContent.value;
+
+        if (message !== "") {
+          console.log("send");
+          socket.emit("chatMessage", message);
+          displayMessage("You: " + message);
+          msgContent.value = "";
+        }
+      }
+    </script>
+  </body>
+</html>
